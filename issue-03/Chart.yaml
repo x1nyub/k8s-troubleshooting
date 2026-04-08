@@ -1,0 +1,6 @@
+apiVersion: v2
+name: issue-03
+description: JIN INFRA 신규 입사자 교육용 - 트러블슈팅 미션 3
+type: application
+version: 0.1.0
+appVersion: "1.24.0"

@@ -1,0 +1,9 @@
+replicaCount: 2
+
+# 배포 대상 네임스페이스 설정
+targetNamespace: "playground"
+
+image:
+  repository: nginx
+  tag: "1.24"
+  pullPolicy: IfNotPresent
