@@ -1,5 +1,5 @@
 apiVersion: v2
-name: issue-02-image-pull
+name: issue-02
 description: 신규 입사자 교육용 - 트러블슈팅 2번 (ImagePullBackOff)
 type: application
 version: 0.1.0
