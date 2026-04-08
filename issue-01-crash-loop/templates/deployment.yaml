@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-server
+  labels:
+    app: api-server
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: api-server
+  template:
+    metadata:
+      labels:
+        app: api-server
+    spec:
+      containers:
+      - name: api
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            echo "[INFO]  Starting API server v2.1.0..."
+            sleep 1
+            echo "[INFO]  Connecting to database at db-primary.internal:5432..."
+            echo "[INFO]  Database connection established."
+            echo "[INFO]  Connecting to Redis at redis-master.internal:6379..."
+            echo "[INFO]  Redis connection established."
+            
+            if [ -z "$CACHE_TTL" ]; then
+              echo "[ERROR] Failed to load configuration: required environment variable 'CACHE_TTL' is not set"
+              echo "[FATAL] Application startup failed. Exiting."
+              exit 1
+            else
+              echo "[INFO]  All configurations loaded successfully. Server running."
+              tail -f /dev/null
+            fi
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: host
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: port
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: api-config
+              key: name
+        - name: REDIS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: api-config
+              key: redis_url
+        - name: NEW_FEATURE
+          valueFrom:
+            configMapKeyRef:
+              name: api-config
+              key: new_feature_flag
+        {{- if .Values.config.cacheTtl }}
+        - name: CACHE_TTL
+          valueFrom:
+            configMapKeyRef:
+              name: api-config
+              key: cache_ttl
+        {{- end }}

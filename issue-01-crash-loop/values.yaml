@@ -1,0 +1,15 @@
+replicaCount: 1
+
+image:
+  repository: alpine
+  tag: "3.18"
+  pullPolicy: IfNotPresent
+
+config:
+  dbName: "production-db"
+  redisUrl: "redis-master.internal:6379"
+  newFeatureFlag: "true"
+
+credentials:
+  dbHost: "db-primary.internal"
+  dbPort: "5432"
