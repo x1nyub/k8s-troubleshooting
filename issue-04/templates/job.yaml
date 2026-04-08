@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.jobConfig.name }}
+  namespace: {{ .Values.jobConfig.namespace }}
+spec:
+  backoffLimit: {{ .Values.jobConfig.backoffLimit }}
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: worker
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        command: ["sh", "-c", "echo 'Processing...'; sleep 2; exit {{ .Values.jobConfig.exitCode }}"]

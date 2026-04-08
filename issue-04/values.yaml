@@ -1,0 +1,9 @@
+jobConfig:
+  name: fail-job
+  namespace: batch
+  exitCode: 1
+  backoffLimit: 1
+
+image:
+  repository: busybox
+  tag: latest
