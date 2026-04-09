@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-loader
+  namespace: {{ .Values.namespace }}
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      serviceAccountName: loader-sa
+      restartPolicy: Never
+      containers:
+      - name: loader
+        image: bitnami/kubectl:latest
+        command: ["kubectl", "get", "pods", "-n", "{{ .Values.namespace }}"]
