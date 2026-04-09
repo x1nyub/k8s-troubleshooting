@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-pod
+spec:
+  containers:
+  - name: app
+    image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+    command: ["sleep", "3600"]
+    volumeMounts:
+    - name: {{ .Values.volumeName.mount }}
+      mountPath: /etc/config
+  volumes:
+  - name: {{ .Values.volumeName.actual }}
+    configMap:
+      name: settings

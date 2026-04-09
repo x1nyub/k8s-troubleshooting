@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: settings
+data:
+  MODE: {{ .Values.config.mode | quote }}
+  VERSION: {{ .Values.config.version | quote }}

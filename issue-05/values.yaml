@@ -1,0 +1,11 @@
+image:
+  repository: busybox
+  tag: latest
+
+config:
+  mode: "dev"
+  version: "1.0"
+
+volumeName:
+  mount: "config-volume"
+  actual: "config-vol"
