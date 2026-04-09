@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hot-reload-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hot-reload-app
+  template:
+    metadata:
+      labels:
+        app: hot-reload-app
+    spec:
+      shareProcessNamespace: true
+      containers:
+      # --- [메인 애플리케이션] ---
+      - name: app
+        image: alpine:latest
+        command:
+        - "sh"
+        - "-c"
+        - |
+          # 설정을 읽어오는 함수
+          read_config() {
+            CONFIG_VAL=$(cat /etc/config/settings.conf)
+            echo "[MAIN] 🔄 Config loaded: $CONFIG_VAL"
+          }
+          # 외부에서 HUP 신호가 오면 read_config 함수를 다시 실행함 (Hot-reload)
+          trap read_config HUP
+          
+          read_config # 최초 1회 실행
+          
+          # 메인 루프 (설정이 바뀌어도 HUP 신호가 없으면 예전 값을 계속 출력함)
+          while true; do
+            echo "[MAIN] 🏃 Running with: $CONFIG_VAL"
+            sleep 10
+          done
+        volumeMounts:
+        - name: config
+          mountPath: /etc/config
+      
+      # --- [설정 감지 사이드카 (Hot-reloader)] ---
+      {{- if .Values.sidecar.enabled }}
+      - name: config-watcher
+        image: alpine:latest
+        command:
+        - "sh"
+        - "-c"
+        - |
+          # 사이드카 자신은 HUP 신호를 무시하도록 설정
+          trap '' HUP
+          echo "[SIDECAR] 👀 Watching for config changes..."
+          LAST_HASH=$(md5sum /etc/config/settings.conf)
+          
+          while true; do
+            NEW_HASH=$(md5sum /etc/config/settings.conf)
+            if [ "$LAST_HASH" != "$NEW_HASH" ]; then
+              echo "[SIDECAR] 🚨 Config change detected! Sending SIGHUP to main app."
+              # 메인 컨테이너의 sh 프로세스에 SIGHUP(새로고침) 시그널 전송
+              killall -HUP sh
+              LAST_HASH=$NEW_HASH
+            fi
+            sleep 5
+          done
+        volumeMounts:
+        - name: config
+          mountPath: /etc/config
+      {{- end }}
+      
+      volumes:
+      - name: config
+        configMap:
+          name: app-config
