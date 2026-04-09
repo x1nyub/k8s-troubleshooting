@@ -1,0 +1,5 @@
+namespace: "apps"
+
+probe:
+  initialDelaySeconds: 5
+  useStartupProbe: false

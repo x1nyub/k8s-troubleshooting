@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: slow-boot-app
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: slow-boot
+  template:
+    metadata:
+      labels:
+        app: slow-boot
+    spec:
+      terminationGracePeriodSeconds: 1
+      containers:
+      - name: web
+        image: nginx:alpine
+        command: ["/bin/sh", "-c", "echo 'Booting up (takes 20s)...'; sleep 20; echo 'Ready!'; nginx -g 'daemon off;'"]
+        ports:
+        - containerPort: 80
+        
+        # 앱이 켜지기 전까지는 READY 0/1 상태를 유지하도록 설정
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 2
+          periodSeconds: 5
+
+        # Liveness Probe
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: {{ .Values.probe.initialDelaySeconds }}
+          periodSeconds: 5
+          failureThreshold: 3
+        
+        # Startup Probe
+        {{- if .Values.probe.useStartupProbe }}
+        startupProbe:
+          httpGet:
+            path: /
+            port: 80
+          failureThreshold: 30
+          periodSeconds: 2
+        {{- end }}
