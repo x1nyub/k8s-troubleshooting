@@ -1,0 +1,7 @@
+serviceAccount:
+  name: "reader-sa"
+
+namespace: "demo"
+
+rbac:
+  enabled: false
