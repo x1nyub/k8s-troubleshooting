@@ -1,0 +1,10 @@
+namespace: "apps"
+
+app:
+  stressBytes: "50M"
+
+resources:
+  requests:
+    memory: "10Mi"
+  limits:
+    memory: "20Mi"
