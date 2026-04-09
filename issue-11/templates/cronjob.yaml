@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.cronjob.name }}
+  namespace: {{ .Values.cronjob.namespace }}
+spec:
+  schedule: {{ .Values.cronjob.schedule | quote }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: cleaner
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            command: ["sh", "-c", "echo 'Cleaning temp files...' && rm -rf /tmp/cache/*"]

@@ -1,0 +1,8 @@
+cronjob:
+  name: cleanup
+  namespace: ops
+  schedule: "0 0 1 1 *"
+
+image:
+  repository: busybox
+  tag: latest
