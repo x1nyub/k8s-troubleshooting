@@ -1,0 +1,11 @@
+image:
+  repository: nginx
+  tag: latest
+
+resources:
+  requests:
+    memory: "4.8Gi"
+    cpu: "1500m"
+  limits:
+    memory: "4.8Gi"
+    cpu: "1500m"
