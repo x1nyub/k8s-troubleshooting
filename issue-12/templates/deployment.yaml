@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: webapp
+        image: nginx:alpine
+        volumeMounts:
+        - name: extra-config
+          {{- if .Values.config.useSubPath }}
+          mountPath: /etc/nginx/conf.d/custom.conf
+          subPath: custom.conf
+          {{- else }}
+          mountPath: /etc/nginx
+          {{- end }}
+      volumes:
+      - name: extra-config
+        configMap:
+          name: webapp-extra
