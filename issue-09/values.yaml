@@ -1,0 +1,3 @@
+storage:
+  size: "1Gi"
+  className: "local-storage"
