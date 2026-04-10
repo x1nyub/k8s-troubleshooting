@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dns-app
+  namespace: {{ .Values.namespace }}
+spec:
+  serviceName: "dns-app"
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dns-app
+  template:
+    metadata:
+      labels:
+        app: dns-app
+    spec:
+      containers:
+      - name: app
+        image: nginx:alpine
+        ports:
+        - containerPort: 80

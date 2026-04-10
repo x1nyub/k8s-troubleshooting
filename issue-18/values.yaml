@@ -1,0 +1,4 @@
+namespace: "dev"
+
+service:
+  clusterIP: "10.96.78.123"
