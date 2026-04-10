@@ -1,0 +1,5 @@
+namespace: "storage"
+
+pvc:
+  storageClassName: "expandable-sc"
+  size: "1Gi"
