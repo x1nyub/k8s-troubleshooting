@@ -1,0 +1,26 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: widgets.mycompany.io
+spec:
+  group: mycompany.io
+  names:
+    plural: widgets
+    singular: widget
+    kind: Widget
+    shortNames:
+    - wd
+  scope: Namespaced
+  versions:
+  - name: v1
+    # values.yaml의 값에 따라 API 제공 여부가 결정됨
+    served: {{ .Values.crd.served }}
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            # 자유로운 형태의 데이터 입력을 허용 (교육용 단순화)
+            x-kubernetes-preserve-unknown-fields: true

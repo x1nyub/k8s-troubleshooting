@@ -1,0 +1,6 @@
+apiVersion: v2
+name: issue-17
+description: JIN INFRA 신규 입사자 교육용 - 트러블슈팅 미션 17
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
