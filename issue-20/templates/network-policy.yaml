@@ -1,0 +1,12 @@
+{{- if .Values.networkPolicy.enableDefaultDeny }}
+# team-b로 들어오는 모든 Ingress 트래픽을 기본적으로 차단합니다.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: team-b
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+{{- end }}
