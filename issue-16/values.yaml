@@ -1,0 +1,7 @@
+namespace: "disco"
+
+app:
+  replicas: 3
+
+service:
+  clusterIP: ""
